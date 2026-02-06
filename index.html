@@ -2,123 +2,139 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Rose Day 🌹</title>
+<title>Rose Day</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500&display=swap" rel="stylesheet">
 
 <style>
 body{
   margin:0;
   height:100vh;
-  background:linear-gradient(#ffe6f0,#fff);
+  background:radial-gradient(circle at top, #ffe6ef, #f6c1cc);
   display:flex;
   justify-content:center;
   align-items:center;
-  font-family:'Segoe UI',sans-serif;
+  font-family:'Playfair Display', serif;
   overflow:hidden;
 }
 
-#scene{text-align:center}
-
-#bush{
-  font-size:80px;
-  cursor:pointer;
-}
-
-.rose{
+/* Scene container */
+.scene{
   position:absolute;
-  font-size:40px;
-  animation:pop .4s ease;
-}
-@keyframes pop{
-  from{transform:scale(0)}
-  to{transform:scale(1)}
+  width:100%;
+  height:100%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
+  transition:opacity 1.5s ease;
 }
 
-/* Teddy beat sync */
-#teddy{
-  display:none;
-  font-size:90px;
-  animation:beat 0.8s infinite;
-  cursor:pointer;
+/* Hidden scenes */
+.hidden{
+  opacity:0;
+  pointer-events:none;
 }
-@keyframes beat{
-  0%,100%{transform:scale(1)}
-  50%{transform:scale(1.15)}
+
+/* Rose */
+#rose{
+  width:220px;
+  opacity:0;
+  transform:scale(0.6);
+  transition:all 2.5s ease;
+}
+#rose.bloom{
+  opacity:1;
+  transform:scale(1);
+}
+
+/* Teddy */
+#teddy{
+  width:260px;
+  transform:translateY(300px);
+  transition:transform 2s cubic-bezier(.22,1.61,.36,1);
 }
 
 /* Card */
 #card{
-  display:none;
-  background:white;
-  padding:20px;
+  background:rgba(255,255,255,0.95);
+  padding:25px;
   border-radius:20px;
   width:85%;
   max-width:360px;
-  box-shadow:0 10px 25px rgba(0,0,0,.2);
+  box-shadow:0 20px 40px rgba(0,0,0,.2);
+  text-align:center;
+  transform:translateY(50px);
+  opacity:0;
+  transition:all 2s ease;
 }
 
-/* Name animation */
+/* Name */
 #name{
   font-size:28px;
-  font-weight:bold;
-  color:#e60073;
-  margin-bottom:10px;
-  text-shadow:0 0 10px pink;
+  color:#b3004b;
+  margin-bottom:15px;
   min-height:36px;
 }
 
-/* Heart photo */
+/* Heart mask */
 .heart{
-  width:140px;
-  height:140px;
+  width:150px;
+  height:150px;
   background:red;
   position:relative;
   transform:rotate(-45deg);
-  margin:15px auto;
+  margin:20px auto;
 }
-.heart:before,.heart:after{
+.heart:before,
+.heart:after{
   content:'';
-  width:140px;
-  height:140px;
+  position:absolute;
+  width:150px;
+  height:150px;
   background:red;
   border-radius:50%;
-  position:absolute;
 }
-.heart:before{top:-70px; left:0}
-.heart:after{left:70px; top:0}
+.heart:before{top:-75px; left:0}
+.heart:after{left:75px; top:0}
 
 .heart img{
-  position:absolute;
-  width:120px;
-  height:120px;
+  width:130px;
+  height:130px;
   border-radius:50%;
+  position:absolute;
   top:10px;
   left:10px;
   transform:rotate(45deg);
 }
 
-/* Floating hearts */
-.floating{
-  position:absolute;
-  color:red;
-  animation:float 4s linear;
-}
-@keyframes float{
-  from{bottom:0; opacity:1}
-  to{bottom:100%; opacity:0}
+.tap{
+  margin-top:20px;
+  font-size:16px;
+  opacity:.7;
 }
 </style>
 </head>
 
 <body>
 
-<audio id="song" autoplay loop>
+<audio id="music" autoplay loop>
   <source src="arz.mp3" type="audio/mpeg">
 </audio>
 
-<div id="scene">
-  <div id="bush">🌹</div>
-  <div id="teddy">🧸💐<br><small>Tap me</small></div>
+<!-- Scene 1 -->
+<div id="scene1" class="scene">
+  <img id="rose" src="rose.png">
+  <div class="tap">tap gently</div>
+</div>
 
+<!-- Scene 2 -->
+<div id="scene2" class="scene hidden">
+  <img id="teddy" src="teddy.png">
+</div>
+
+<!-- Scene 3 -->
+<div id="scene3" class="scene hidden">
   <div id="card">
     <div id="name"></div>
 
@@ -126,67 +142,47 @@ body{
       <img src="her.jpg">
     </div>
 
-    <p style="font-size:17px">
-      Like red roses, your beauty is timeless.<br>
-      Like pink, it’s gentle and warm.<br>
-      Like orange, it fills life with joy.<br><br>
-      On this Rose Day 🌹<br>
-      every color blooms because of you.
+    <p>
+      Like roses, your beauty isn’t just seen —  
+      it’s felt.
     </p>
 
-    <p><b>— From yours truly, Akashdeep 💛</b></p>
+    <p><b>— Akashdeep</b></p>
   </div>
 </div>
 
 <script>
-let count=0;
-const colors=["🌹","🌹","🌷"];
-const bush=document.getElementById("bush");
-const teddy=document.getElementById("teddy");
-const card=document.getElementById("card");
-const nameDiv=document.getElementById("name");
+let step=0;
 
-/* Rose bloom */
-bush.onclick=()=>{
-  if(count<10){
-    const r=document.createElement("div");
-    r.className="rose";
-    r.innerText=colors[Math.floor(Math.random()*3)];
-    r.style.left=Math.random()*90+"%";
-    r.style.top=Math.random()*70+"%";
-    document.body.appendChild(r);
-    count++;
+document.body.onclick=()=>{
+  if(step===0){
+    document.getElementById("rose").classList.add("bloom");
+    setTimeout(()=>{
+      scene1.classList.add("hidden");
+      scene2.classList.remove("hidden");
+      document.getElementById("teddy").style.transform="translateY(0)";
+    },2500);
+    step++;
   }
-  if(count===10){
-    bush.style.display="none";
-    teddy.style.display="block";
+  else if(step===1){
+    scene2.classList.add("hidden");
+    scene3.classList.remove("hidden");
+    const card=document.getElementById("card");
+    card.style.opacity=1;
+    card.style.transform="translateY(0)";
+    typeName("Ayantika");
+    step++;
   }
 };
 
-/* Teddy click → card */
-teddy.onclick=()=>{
-  teddy.style.display="none";
-  card.style.display="block";
-  typeName("Ayantika");
-
-  setInterval(()=>{
-    const h=document.createElement("div");
-    h.className="floating";
-    h.innerText="💖";
-    h.style.left=Math.random()*100+"%";
-    document.body.appendChild(h);
-    setTimeout(()=>h.remove(),4000);
-  },350);
-};
-
-/* Name typing animation */
 function typeName(text){
   let i=0;
+  const n=document.getElementById("name");
   const interval=setInterval(()=>{
-    nameDiv.innerHTML+=text.charAt(i);
+    n.innerHTML+=text.charAt(i);
     i++;
     if(i===text.length) clearInterval(interval);
-  },150);
+  },160);
 }
 </script>
 
