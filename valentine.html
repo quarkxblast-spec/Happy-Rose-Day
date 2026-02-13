@@ -1,1 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Will You Be My Valentine?</title>
 
+<style>
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, #ff758c, #ff7eb3);
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  text-align: center;
+}
+
+.container {
+  color: white;
+}
+
+h1 {
+  font-size: 2.2rem;
+  margin-bottom: 40px;
+}
+
+button {
+  padding: 12px 28px;
+  font-size: 18px;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: 0.3s;
+  margin: 10px;
+}
+
+#yesBtn {
+  background: white;
+  color: #ff4d6d;
+}
+
+#noBtn {
+  background: #ff4d6d;
+  color: white;
+  position: absolute;
+}
+
+.hidden {
+  display: none;
+}
+
+/* Floating hearts */
+.heart {
+  position: fixed;
+  bottom: -20px;
+  font-size: 20px;
+  animation: floatUp 5s linear infinite;
+  opacity: 0.8;
+}
+
+@keyframes floatUp {
+  to {
+    transform: translateY(-110vh);
+    opacity: 0;
+  }
+}
+
+/* Slideshow */
+#slideshow {
+  position: fixed;
+  inset: 0;
+  background: black;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 30px;
+  flex-direction: column;
+}
+
+.slide {
+  display: none;
+}
+
+.slide.active {
+  display: block;
+}
+
+/* Letter Popup */
+#letter {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  display: none;
+  justify-content: center;
+  align-items: center;
+}
+
+.letter-box {
+  background: white;
+  color: #333;
+  padding: 30px;
+  border-radius: 15px;
+  width: 85%;
+  max-width: 400px;
+  animation: pop 0.5s ease;
+}
+
+@keyframes pop {
+  from { transform: scale(0); }
+  to { transform: scale(1); }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container" id="main">
+  <h1>Will you be my Valentine, Ayantika? 💘</h1>
+  <button id="yesBtn">Yes ❤️</button>
+  <button id="noBtn">No</button>
+</div>
+
+<div id="slideshow">
+  <div class="slide active">You are my calm in chaos ❤️</div>
+  <div class="slide">My favorite person 🌹</div>
+  <div class="slide">My always and forever 💞</div>
+  <p style="margin-top:40px;font-size:18px;">(Click anywhere)</p>
+</div>
+
+<div id="letter">
+  <div class="letter-box">
+    <h2>For You, Ayantika ❤️</h2>
+    <p>
+      I love you, Ayantika. <br><br>
+      Thank you for always choosing me —
+      in the lows and in the highs.  
+      For staying when things weren’t easy.  
+      For being my comfort, my calm, and my chaos.  
+      <br><br>
+      I don’t just want today —  
+      I want every tomorrow with you.
+    </p>
+  </div>
+</div>
+
+<script>
+const noBtn = document.getElementById("noBtn");
+const yesBtn = document.getElementById("yesBtn");
+const main = document.getElementById("main");
+const slideshow = document.getElementById("slideshow");
+const letter = document.getElementById("letter");
+
+const noTexts = [
+  "You sure?",
+  "Think again 😌",
+  "Pretty please?",
+  "Last chance!",
+  "Are you really sure?",
+  "Come onnnn"
+];
+
+let noIndex = 0;
+
+noBtn.addEventListener("mouseover", () => {
+  noBtn.style.top = Math.random() * (window.innerHeight - 50) + "px";
+  noBtn.style.left = Math.random() * (window.innerWidth - 100) + "px";
+  noBtn.innerText = noTexts[noIndex % noTexts.length];
+  noIndex++;
+});
+
+yesBtn.addEventListener("click", () => {
+  main.style.display = "none";
+  slideshow.style.display = "flex";
+  startHearts();
+  startSlides();
+});
+
+function startHearts() {
+  setInterval(() => {
+    const heart = document.createElement("div");
+    heart.classList.add("heart");
+    heart.innerHTML = "❤";
+    heart.style.left = Math.random() * 100 + "vw";
+    heart.style.fontSize = (15 + Math.random() * 20) + "px";
+    document.body.appendChild(heart);
+
+    setTimeout(() => heart.remove(), 5000);
+  }, 300);
+}
+
+let currentSlide = 0;
+const slides = document.querySelectorAll(".slide");
+
+function startSlides() {
+  setInterval(() => {
+    slides[currentSlide].classList.remove("active");
+    currentSlide = (currentSlide + 1) % slides.length;
+    slides[currentSlide].classList.add("active");
+  }, 2000);
+}
+
+slideshow.addEventListener("click", () => {
+  slideshow.style.display = "none";
+  letter.style.display = "flex";
+});
+</script>
+
+</body>
+  </html>
